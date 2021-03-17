@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">StockHelper</string>
+    <string name="appName">StockHelper</string>
+    <string name="appLogo">StockHelper</string>
+    <string name="loginEntry">Login</string>
+    <string name="loginButton">Login</string>
+    <string name="passwordEntry">Password</string>
+    <string name="registerText">Register</string>
+</resources>
