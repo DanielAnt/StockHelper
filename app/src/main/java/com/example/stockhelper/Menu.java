@@ -40,7 +40,7 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 username = snapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("username").getValue(String.class);
-                welcomeText.setText("Welcome " + username);
+                welcomeText.setText("Welcome " + username + "!");
             }
 
             @Override
