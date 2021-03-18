@@ -2,10 +2,16 @@
     <string name="app_name">StockHelper</string>
     <string name="appName">StockHelper</string>
     <string name="app_logo">StockHelper</string>
-    <string name="login_entry">Login</string>
+    <string name="login_email">Email</string>
     <string name="login_button">Login</string>
     <string name="password_entry">Password</string>
     <string name="register_text">Register</string>
     <string name="register_email">Email</string>
     <string name="register_repeat_password">Repeat password</string>
+    <string name="register_username">Username</string>
+    <string name="favorite">FAVORITE</string>
+    <string name="profile">PROFILE</string>
+    <string name="settings">SETTINGS</string>
+    <string name="logout">LOGOUT</string>
+    <string name="search">SEARCH</string>
 </resources>
