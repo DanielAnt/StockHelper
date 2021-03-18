@@ -2,6 +2,7 @@ package com.example.stockhelper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.registerText:
+                startActivity(new Intent(this, Register.class));
                 break;
             case R.id.login_button:
                 login = loginInput.getText().toString();
