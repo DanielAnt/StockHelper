@@ -52,6 +52,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        if(mUser != null){
+            startActivity(new Intent(Login.this, Menu.class));
+        }
+
+    }
+
+    @Override
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.registerText:
