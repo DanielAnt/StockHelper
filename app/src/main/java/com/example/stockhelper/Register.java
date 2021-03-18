@@ -110,15 +110,14 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
         registerProgressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(Register.this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             User user = new User(login, email);
-                            Log.d("FirebaseAuth", "onComplete" + task.getException().getMessage());
                             FirebaseDatabase.getInstance().getReference("Users")
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(user).addOnCompleteListener(Register.this, new OnCompleteListener<Void>() {
+                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
@@ -133,7 +132,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                             });
                         }
                         else{
-                            Toast.makeText(Register.this, "Here Something gone wrong! Try again!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Register.this, "Something gone wrong! Try again!", Toast.LENGTH_LONG).show();
                             registerProgressBar.setVisibility(View.GONE);
                         }
                     }
