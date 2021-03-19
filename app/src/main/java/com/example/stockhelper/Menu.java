@@ -68,6 +68,7 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.menuSearchButton:
+                openSearchActivity();
                 break;
             case R.id.menuFavoriteButton:
                 break;
@@ -85,6 +86,12 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
 
 
 }
+
+    public void openSearchActivity(){
+        Intent searchIntent = new Intent(this, Search.class);
+        startActivity(searchIntent);
+    }
+
 
     private void firebaseLogout() {
         mAuth.signOut();
