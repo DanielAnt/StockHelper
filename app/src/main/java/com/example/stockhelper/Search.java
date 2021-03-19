@@ -17,15 +17,18 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Search extends AppCompatActivity {
 
     SearchView searchView;
     ListView listView;
-
+    Map stockSymbols = new HashMap();
     String[] nameList={};
 
     ArrayAdapter<String> arrayAdapter;
@@ -40,15 +43,13 @@ public class Search extends AppCompatActivity {
 
 
         arrayToList();
+        loadHashMapFromJson();
         searchingViewList();
     }
 
 
 
     public void searchingViewList() {
-
-        System.out.println(nameList[1]);
-
 
         searchView =findViewById(R.id.searchBar);
         listView = findViewById(R.id.listItem);
@@ -58,7 +59,8 @@ public class Search extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(Search.this, "You click -" + adapterView.getItemAtPosition(i).toString(), Toast.LENGTH_SHORT).show();
+                // https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=IBBOJPT8T6NZA44K
+                Toast.makeText(Search.this, "You click -" + stockSymbols.get(adapterView.getItemAtPosition(i).toString()), Toast.LENGTH_SHORT).show();
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -80,16 +82,17 @@ public class Search extends AppCompatActivity {
         try {
             JSONArray jsonArray = new JSONArray(loadJSONFromAsset("CompaniesArray.json"));
 
-            String[] temporatyList=new String[jsonArray.length()];
+            String[] temporaryList=new String[jsonArray.length()];
             for(int i = 0; i <jsonArray.length(); i++){
-                temporatyList[i]=jsonArray.optString(i);
+                temporaryList[i]=jsonArray.optString(i);
 
             }
-            nameList = temporatyList;
+            nameList = temporaryList;
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
 
     public String loadJSONFromAsset(String fileName) {
         String json = null;
@@ -107,6 +110,19 @@ public class Search extends AppCompatActivity {
         return json;
     }
 
+    public void loadHashMapFromJson(){
+        try {
+            JSONArray jsonArray = new JSONArray(loadJSONFromAsset("AllCompaniesWithSymbols.json"));
+
+            for(int i = 0; i <jsonArray.length(); i++){
+                JSONObject companyDetail = jsonArray.getJSONObject(i);
+                stockSymbols.put(companyDetail.getString("Name"), companyDetail.getString("Symbol"));
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

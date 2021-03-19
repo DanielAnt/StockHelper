@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StockHelper">
-        <activity android:name=".Search"></activity>
+        <activity android:name=".StockPage"></activity>
+        <activity android:name=".Search" />
         <activity android:name=".Menu" />
         <activity android:name=".Register" />
         <activity android:name=".Login">
