@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -69,7 +70,8 @@ public class Search extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                jsonParse((String) stockSymbols.get(adapterView.getItemAtPosition(i).toString()));
+                searchProgressBar.setVisibility(View.VISIBLE);
+                jsonParse((String) adapterView.getItemAtPosition(i).toString());
 
 
             }
@@ -135,8 +137,8 @@ public class Search extends AppCompatActivity {
         }
     }
 
-    private void jsonParse(String stockSymbol) {
-        System.out.println(stockSymbol);
+    private void jsonParse(String stockName) {
+        String stockSymbol = stockSymbols.get(stockName).toString();
         String url = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +stockSymbol+ "&apikey=IBBOJPT8T6NZA44K";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -144,16 +146,26 @@ public class Search extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONObject stock = response.getJSONObject("Global Quote");
-                            String symbol = stock.getString("01. symbol");
+                            String open = stock.getString("02. open");
+                            String high = stock.getString("03. high");
+                            String low = stock.getString("04. low");
                             String price = stock.getString("05. price");
+                            String volume = stock.getString("06. volume");
+                            String lastTradingDay = stock.getString("07. latest trading day");
+                            String prevClose = stock.getString("08. previous close");
                             String change = stock.getString("09. change");
-                            String changeProcentage = stock.getString("10. change percent");
-                            String test = (symbol + " " + price + " " + change + " " + changeProcentage);
-                            Toast.makeText(Search.this, "You click -" + test, Toast.LENGTH_SHORT).show();
+                            String changePercentage = stock.getString("10. change percent");
+                            Stock chosenStock = new Stock(stockSymbol, stockName, open, high, low, price, volume,
+                                    lastTradingDay, prevClose, change, changePercentage);
+                            Intent intent = new Intent(Search.this, StockPage.class);
+                            intent.putExtra("chosenStock", chosenStock);
+                            searchProgressBar.setVisibility(View.GONE);
+                            startActivity(intent);
 
                     } catch (JSONException e) {
                             e.printStackTrace();
-                            System.out.println(e);
+                            Toast.makeText(Search.this, "Something gone wrong! Try again!", Toast.LENGTH_LONG).show();
+                            searchProgressBar.setVisibility(View.GONE);
                         }
                     }
                 }, new Response.ErrorListener() {

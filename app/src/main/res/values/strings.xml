@@ -14,4 +14,9 @@
     <string name="settings">SETTINGS</string>
     <string name="logout">LOGOUT</string>
     <string name="search">SEARCH</string>
+    <string name="test_name_resource">Test</string>
+    <string name="stock_open">Open</string>
+    <string name="stock_low">Low</string>
+    <string name="stock_high">High</string>
+    <string name="stock_prev_close">Prev. close</string>
 </resources>
