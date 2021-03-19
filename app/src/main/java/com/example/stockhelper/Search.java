@@ -43,7 +43,7 @@ public class Search extends AppCompatActivity {
             JSONArray jsonArray = new JSONArray(loadJSONFromAsset("CompaniesArray.json"));
 
             String[] temporatyList=new String[jsonArray.length()];
-            for(int i = 0; i <15; i++){
+            for(int i = 0; i <jsonArray.length(); i++){
                 temporatyList[i]=jsonArray.optString(i);
 
             }
