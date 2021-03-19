@@ -39,21 +39,7 @@ public class Search extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
 
-        try {
-            JSONArray jsonArray = new JSONArray(loadJSONFromAsset("CompaniesArray.json"));
-
-            String[] temporatyList=new String[jsonArray.length()];
-            for(int i = 0; i <jsonArray.length(); i++){
-                temporatyList[i]=jsonArray.optString(i);
-
-            }
-            nameList = temporatyList;
-            System.out.println(nameList[1]);
-            System.out.println(jsonArray.optString(1));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+        arrayToList();
         searchingViewList();
     }
 
@@ -87,6 +73,22 @@ public class Search extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+
+    public void arrayToList(){
+        try {
+            JSONArray jsonArray = new JSONArray(loadJSONFromAsset("CompaniesArray.json"));
+
+            String[] temporatyList=new String[jsonArray.length()];
+            for(int i = 0; i <jsonArray.length(); i++){
+                temporatyList[i]=jsonArray.optString(i);
+
+            }
+            nameList = temporatyList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String loadJSONFromAsset(String fileName) {
