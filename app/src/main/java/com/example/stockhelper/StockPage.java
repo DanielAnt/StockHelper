@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -36,6 +37,7 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
     private TextView stockPrevCloseValue;
     private Button priceHistoryButton;
     private RequestQueue mQueue;
+    private Stock chosenStock;
 
 
 
@@ -56,13 +58,21 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
         priceHistoryButton = findViewById(R.id.stockPriceHistoryButton);
         priceHistoryButton.setOnClickListener(this);
 
-        Stock chosenStock = getIntent().getParcelableExtra("chosenStock");
 
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+        df.setMinimumFractionDigits(0);
+        df.setGroupingUsed(false);
+
+
+
+
+        chosenStock = getIntent().getParcelableExtra("chosenStock");
         stockName.setText(chosenStock.name);
         stockSymbol.setText(chosenStock.symbol);
-        stockPrice.setText(chosenStock.price + " USD");
-        stockChange.setText(chosenStock.change +
-                " (" +chosenStock.changePercentage+ ")");
+        stockPrice.setText(df.format(Float.parseFloat(chosenStock.price)) + " USD");
+        stockChange.setText(df.format(Float.parseFloat(chosenStock.change)) +
+                " (" + chosenStock.changePercentage + ")");
         Float changeValue = Float.parseFloat(chosenStock.change);
         if(changeValue < 0){
             stockChange.setTextColor(Color.rgb(200,0,0));
@@ -72,10 +82,10 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
             stockChange.setTextColor(Color.rgb(0,200, 0));
         }
 
-        stockOpenValue.setText(chosenStock.open);
-        stockLowValue.setText(chosenStock.low);
-        stockHighValue.setText(chosenStock.high);
-        stockPrevCloseValue.setText(chosenStock.pervClose);
+        stockOpenValue.setText(df.format(Float.parseFloat(chosenStock.open)) + "$");
+        stockLowValue.setText(df.format(Float.parseFloat(chosenStock.low)) + "$");
+        stockHighValue.setText(df.format(Float.parseFloat(chosenStock.high)) + "$");
+        stockPrevCloseValue.setText(df.format(Float.parseFloat(chosenStock.pervClose)) + "$");
 
 
     }
@@ -84,7 +94,10 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.stockPriceHistoryButton:
-                startActivity(new Intent(this, StockPriceHistory.class));
+                chosenStock = getIntent().getParcelableExtra("chosenStock");
+                Intent intent = new Intent(this, StockPriceHistory.class);
+                intent.putExtra("chosenStock", chosenStock);
+                startActivity(intent);
                 break;
         }
     }

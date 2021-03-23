@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,28 +32,50 @@ public class StockPriceHistory extends AppCompatActivity {
 
     private LineGraphSeries<DataPoint> graphData;
     private RequestQueue mQueue;
-    private  GraphView graph;
-
+    private GraphView graph;
+    private String[]  dates;
+    private Stock chosenStock;
+    private ProgressBar graphProgressBar;
+    private ProgressBar test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_price_history);
+
         graph = (GraphView) findViewById(R.id.graph);
+        graphProgressBar = (ProgressBar) findViewById(R.id.graphProgressBar);
+
+        graph.setVisibility(View.GONE);
+        graphProgressBar.setVisibility(View.VISIBLE);
+
         mQueue = Volley.newRequestQueue(this);
-        jsonParseDaily("IBM");
+        chosenStock = getIntent().getParcelableExtra("chosenStock");
+        jsonParseDaily(chosenStock.symbol);
+
+
+
+
+
         graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
-                    Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    Format formatter = new SimpleDateFormat("yy-MM-dd");
                     return formatter.format(value);
                 }
                 return super.formatLabel(value, isValueX);
 
             }
         });
-        graph.getGridLabelRenderer().setNumHorizontalLabels(3);
+
+
+
+
+
+
+
+
     }
 
 
@@ -68,7 +92,7 @@ public class StockPriceHistory extends AppCompatActivity {
                             JSONObject stock = response.getJSONObject("Time Series (Daily)");
                             Iterator<String> jsonKeys = stock.keys();
                             int datesLength = stock.length();
-                            String[] dates = new String[datesLength];
+                            dates = new String[datesLength];
                             datesLength --;
                             while(jsonKeys.hasNext()){
                                 dates[datesLength] = jsonKeys.next();
@@ -76,14 +100,26 @@ public class StockPriceHistory extends AppCompatActivity {
                             }
                             graphData = new LineGraphSeries();
                             for(int i = 0; i < dates.length; i++){
-                                System.out.println(dates[i]);
                                 JSONObject stockDay = stock.getJSONObject(dates[i]);
                                 String price = stockDay.getString("4. close");
                                 String[] date = dates[i].split("-");
                                 Calendar cal = new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
                                 graphData.appendData(new DataPoint(cal.getTimeInMillis(), Double.parseDouble(price)), true, dates.length);
                             }
+
+                            graph.getGridLabelRenderer().setTextSize(25);
+                            graph.getGridLabelRenderer().setNumHorizontalLabels(3);
+                            graph.getViewport().setYAxisBoundsManual(true);
+                            graph.getViewport().setMinX(graphData.getLowestValueX());
+                            graph.getViewport().setMaxX(graphData.getHighestValueX());
+                            graph.getViewport().setMinY(0);
+                            graph.getViewport().setMaxY(graphData.getHighestValueY()*1.2);
+                            graph.getViewport().setScalable(true);
+                            graph.getViewport().setScalableY(true);
                             graph.addSeries(graphData);
+
+                            graph.setVisibility(View.VISIBLE);
+                            graphProgressBar.setVisibility(View.GONE);
 
 
                         } catch (JSONException e) {
