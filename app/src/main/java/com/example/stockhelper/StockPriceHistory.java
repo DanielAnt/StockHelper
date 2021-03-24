@@ -32,8 +32,6 @@ import java.util.Iterator;
 
 public class StockPriceHistory extends AppCompatActivity implements View.OnClickListener {
 
-
-
     private Button oneDay;
     private Button fiveDay;
     private Button oneMonth;
@@ -46,7 +44,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
     private String[]  dates;
     private Stock chosenStock;
     private ProgressBar graphProgressBar;
-    private ProgressBar test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,17 +68,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
         chosenStock = getIntent().getParcelableExtra("chosenStock");
         mQueue = Volley.newRequestQueue(this);
         showOneMonth(chosenStock.symbol);
-
-
-
-
-
-
-
-
-
-
-
     }
 
     @Override
@@ -113,9 +99,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                 showAllTime(chosenStock.symbol);
                 break;
         }
-
-
-
     }
 
     private void showAllTime(String stockSymbol) {
@@ -144,8 +127,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                                 graphData.appendData(new DataPoint(cal.getTimeInMillis(), Double.parseDouble(price)), true, dates.length);
                             }
 
-
-
                             graph.getGridLabelRenderer().setTextSize(25);
                             graph.getGridLabelRenderer().setNumHorizontalLabels(5);
                             graph.getViewport().setYAxisBoundsManual(true);
@@ -157,7 +138,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                             graph.getLegendRenderer().setVisible(true);
                             graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
                             graphData.setTitle(chosenStock.symbol);
-
 
                             graph.removeAllSeries();
                             graph.addSeries(graphData);
@@ -173,11 +153,8 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                                         return formatter.format(value);
                                     }
                                     return super.formatLabel(value, isValueX);
-
                                 }
                             });
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                             graphProgressBar.setVisibility(View.GONE);
@@ -190,10 +167,7 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                 error.printStackTrace();
             }
         });
-
         mQueue.add(request);
-
-
     }
 
 
@@ -231,7 +205,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                                     String[] date = dates[i].split("-");
                                     Calendar cal = new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[2]));
                                     graphData.appendData(new DataPoint(cal.getTimeInMillis(), Double.parseDouble(price)), true, timeRange);
-
                                 }
                             }else{
                                 for(int i = 0; i < dates.length; i++){
@@ -242,7 +215,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                                     graphData.appendData(new DataPoint(cal.getTimeInMillis(), Double.parseDouble(price)), true, dates.length);
                                 }
                             }
-
 
                             graph.getGridLabelRenderer().setTextSize(25);
                             graph.getGridLabelRenderer().setNumHorizontalLabels(5);
@@ -255,7 +227,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                             graph.getLegendRenderer().setVisible(true);
                             graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
                             graphData.setTitle(chosenStock.symbol);
-
 
                             graph.removeAllSeries();
                             graph.addSeries(graphData);
@@ -274,8 +245,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
 
                                 }
                             });
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                             graphProgressBar.setVisibility(View.GONE);
@@ -288,10 +257,7 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                 error.printStackTrace();
             }
         });
-
         mQueue.add(request);
-
-
     }
 
 
@@ -314,7 +280,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                                 dates = new String[timeRange];
                                 datesLength = timeRange - 1;
                             }
-
                             int iter = 1;
                             while(jsonKeys.hasNext() && iter <= timeRange){
                                 dates[datesLength] = jsonKeys.next();
@@ -340,7 +305,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                                 }
                             }
 
-
                             graph.getGridLabelRenderer().setTextSize(25);
                             graph.getGridLabelRenderer().setNumHorizontalLabels(5);
                             graph.getViewport().setYAxisBoundsManual(true);
@@ -352,7 +316,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                             graph.getLegendRenderer().setVisible(true);
                             graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
                             graphData.setTitle(chosenStock.symbol);
-
 
                             graph.removeAllSeries();
                             graph.addSeries(graphData);
@@ -371,8 +334,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
 
                                 }
                             });
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                             graphProgressBar.setVisibility(View.GONE);
@@ -385,10 +346,7 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                 error.printStackTrace();
             }
         });
-
         mQueue.add(request);
-        graphProgressBar.setVisibility(View.GONE);
-
     }
 
     private void showFiveDays(String stockSymbol) {
@@ -444,11 +402,8 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
 
                                 }
                             });
-
                             graph.setVisibility(View.VISIBLE);
                             graphProgressBar.setVisibility(View.GONE);
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                             graphProgressBar.setVisibility(View.GONE);
@@ -462,7 +417,6 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
             }
         });
         mQueue.add(request);
-
     }
 
     private void showOneDay(String stockSymbol) {
@@ -515,13 +469,10 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                                         return formatter.format(value);
                                     }
                                     return super.formatLabel(value, isValueX);
-
                                 }
                             });
-
                             graph.setVisibility(View.VISIBLE);
                             graphProgressBar.setVisibility(View.GONE);
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -536,7 +487,5 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
             }
         });
         mQueue.add(request);
-
     }
-
 }
