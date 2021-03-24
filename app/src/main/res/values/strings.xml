@@ -19,4 +19,10 @@
     <string name="stock_low">Low</string>
     <string name="stock_high">High</string>
     <string name="stock_prev_close">Prev. close</string>
+    <string name="history_range_1m">1M</string>
+    <string name="history_range_all">ALL</string>
+    <string name="history_range_1y">1Y</string>
+    <string name="history_range_5d">5D</string>
+    <string name="history_range_1d">1D</string>
+    <string name="stock_price_history">Price History</string>
 </resources>
