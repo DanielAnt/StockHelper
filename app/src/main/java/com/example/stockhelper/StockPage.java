@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
     private TextView stockLowValue;
     private TextView stockPrevCloseValue;
     private Button priceHistoryButton;
+    private Button favButton;
     private RequestQueue mQueue;
     private Stock chosenStock;
 
@@ -56,7 +58,9 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
         stockHighValue = findViewById(R.id.stockHighValue);
         stockPrevCloseValue = findViewById(R.id.stockPrevCloseValue);
         priceHistoryButton = findViewById(R.id.stockPriceHistoryButton);
+        favButton = findViewById(R.id.addToFavButton);
         priceHistoryButton.setOnClickListener(this);
+        favButton.setOnClickListener(this);
 
 
         DecimalFormat df = new DecimalFormat();
@@ -99,8 +103,13 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
                 intent.putExtra("chosenStock", chosenStock);
                 startActivity(intent);
                 break;
+            case R.id.addToFavButton:
+                chosenStock = getIntent().getParcelableExtra("chosenStock");
+                Log.d("Fav",String.valueOf(chosenStock));
+                break;
         }
     }
+
 
 
 }
