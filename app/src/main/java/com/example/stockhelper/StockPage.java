@@ -1,5 +1,6 @@
 package com.example.stockhelper;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -18,13 +19,21 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class StockPage extends AppCompatActivity implements View.OnClickListener {
 
@@ -40,7 +49,8 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
     private Button favButton;
     private RequestQueue mQueue;
     private Stock chosenStock;
-
+    private FirebaseAuth mAuth;
+    private List<String> FavList;
 
 
     @Override
@@ -61,6 +71,7 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
         favButton = findViewById(R.id.addToFavButton);
         priceHistoryButton.setOnClickListener(this);
         favButton.setOnClickListener(this);
+        mAuth = FirebaseAuth.getInstance();
 
 
         DecimalFormat df = new DecimalFormat();
@@ -105,7 +116,57 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
                 break;
             case R.id.addToFavButton:
                 chosenStock = getIntent().getParcelableExtra("chosenStock");
-                Log.d("Fav",String.valueOf(chosenStock));
+
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.child("Users").child(mAuth.getCurrentUser().getUid()).hasChild("fav")){
+                            String currentFav = snapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("fav").getValue().toString();
+                            FavList = new ArrayList<>();
+                            System.out.println(currentFav);
+                             if (currentFav.contains("[")){
+                                 currentFav = currentFav.substring(1, currentFav.length() - 1);
+                                 String[] favArray = currentFav.split(",");
+                                 for(String item: favArray){
+                                     FavList.add(item.trim());
+                                 }
+                                 for(String item: FavList){
+                                     System.out.println(item);
+                                 }
+//                                 for(String item: FavList){
+//                                     if(item.equals(chosenStock.symbol)){
+//                                         hasSymbol = true;
+//                                     }
+//                                     else{
+//                                         FavList.add(chosenStock.symbol);
+//                                     }
+//                                 }
+
+                             }
+                             else {
+                                 if(!currentFav.equals(chosenStock.symbol)){
+                                     FavList.add(currentFav);
+                                     FavList.add(chosenStock.symbol);
+                                 }
+                             }
+
+                             databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("fav").removeValue();
+                             if (FavList.size() > 0){
+                                 databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("fav").setValue(FavList);
+                             }
+                        }
+                        else {
+                            databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("fav").setValue(chosenStock.symbol);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
                 break;
         }
     }
