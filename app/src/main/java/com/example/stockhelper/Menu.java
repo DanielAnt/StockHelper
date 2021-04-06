@@ -71,6 +71,7 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
                 openSearchActivity();
                 break;
             case R.id.menuFavoriteButton:
+                openFavActivity();
                 break;
             case R.id.menuProfileButton:
                 break;
@@ -90,6 +91,11 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
     public void openSearchActivity(){
         Intent searchIntent = new Intent(this, Search.class);
         startActivity(searchIntent);
+    }
+
+    public void openFavActivity() {
+        Intent favIntent = new Intent(this,Favorite.class);
+        startActivity(favIntent);
     }
 
 
