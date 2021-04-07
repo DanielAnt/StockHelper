@@ -59,7 +59,6 @@ public class Favorite extends AppCompatActivity {
         setContentView(R.layout.activity_favorite);
 
         searchProgressBar = findViewById(R.id.searchProgressBarFav);
-//        arrayToList();
         loadHashMapFromJson();
         searchingViewList();
 
@@ -133,55 +132,8 @@ public class Favorite extends AppCompatActivity {
 
             }
         });
-
-
-
-
-
-
-
-//        searchView =findViewById(R.id.searchBar);
-//        listView = findViewById(R.id.listItem);
-//        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, nameList);
-//        listView.setAdapter(arrayAdapter);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                searchProgressBar.setVisibility(View.VISIBLE);
-//                jsonParse((String) adapterView.getItemAtPosition(i).toString());
-//            }
-//        });
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                Favorite.this.arrayAdapter.getFilter().filter(query);
-//
-//                return false;
-//            }
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                Favorite.this.arrayAdapter.getFilter().filter((newText));
-//
-//                return false;
-//            }
-//        });
     }
 
-//    private void arrayToList(){
-//        try {
-//            JSONArray jsonArray = new JSONArray(loadJSONFromAsset("AllCompaniesWithSymbolsTrimmed.json"));
-//            String[] temporaryList=new String[jsonArray.length()];
-//            for(int i = 0; i <jsonArray.length(); i++){
-//                JSONObject companyDetail = jsonArray.getJSONObject(i);
-//                temporaryList[i]=companyDetail.getString("Name");
-//            }
-//            nameList = temporaryList;
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//    }
 
 
     private String loadJSONFromAsset(String fileName) {
