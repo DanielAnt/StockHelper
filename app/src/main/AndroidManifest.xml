@@ -14,6 +14,7 @@
         <activity android:name=".StockPriceHistory"></activity>
         <activity android:name=".StockPage" />
         <activity android:name=".Search" />
+        <activity android:name=".Favorite" />
         <activity android:name=".Menu" />
         <activity android:name=".Register" />
         <activity android:name=".Login">
