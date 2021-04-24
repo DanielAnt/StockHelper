@@ -71,6 +71,7 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
                 openSearchActivity();
                 break;
             case R.id.menuFavoriteButton:
+                openFavActivity();
                 break;
             case R.id.menuProfileButton:
                 openProfileActivity();
@@ -92,19 +93,16 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
         Intent searchIntent = new Intent(this, Search.class);
         startActivity(searchIntent);
     }
-
-<<<<<<< Updated upstream
-=======
-    public void openFavActivity() {
-        Intent favIntent = new Intent(this,Favorite.class);
-        startActivity(favIntent);
-    }
     public void openProfileActivity() {
         Intent profileIntent = new Intent(this,Profile.class);
         startActivity(profileIntent);
     }
 
->>>>>>> Stashed changes
+    public void openFavActivity() {
+        Intent favIntent = new Intent(this,Favorite.class);
+        startActivity(favIntent);
+    }
+
 
     private void firebaseLogout() {
         mAuth.signOut();

@@ -2,11 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.stockhelper">
 
-<<<<<<< Updated upstream
-=======
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 
->>>>>>> Stashed changes
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -14,15 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StockHelper">
-<<<<<<< Updated upstream
-        <activity android:name=".Search"></activity>
-=======
-        <activity android:name=".Profile"></activity>
-        <activity android:name=".StockPriceHistory" />
+        <activity android:name=".StockPriceHistory"></activity>
         <activity android:name=".StockPage" />
         <activity android:name=".Search" />
+        <activity android:name=".Profile"></activity>
         <activity android:name=".Favorite" />
->>>>>>> Stashed changes
         <activity android:name=".Menu" />
         <activity android:name=".Register" />
         <activity android:name=".Login">

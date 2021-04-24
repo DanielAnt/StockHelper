@@ -130,43 +130,43 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
                             FavList = new ArrayList<>();
                             Boolean hasSymbol = false;
                             System.out.println(currentFav);
-                             if (currentFav.contains("[")){
-                                 currentFav = currentFav.substring(1, currentFav.length() - 1);
-                                 String[] favArray = currentFav.split(",");
-                                 for(String item: favArray){
-                                     FavList.add(item.trim());
-                                 }
+                            if (currentFav.contains("[")){
+                                currentFav = currentFav.substring(1, currentFav.length() - 1);
+                                String[] favArray = currentFav.split(",");
+                                for(String item: favArray){
+                                    FavList.add(item.trim());
+                                }
 
-                                 for (String item: favArray){
-                                     System.out.println(item.trim());
-                                     System.out.println(item.trim().equals(chosenStock.symbol));
-                                     if(item.trim().equals(chosenStock.symbol)){
-                                         FavList.remove(item.trim());
-                                         hasSymbol = true;
-                                     }
-                                 }
-                                 if(!hasSymbol){
-                                     FavList.add(chosenStock.symbol);
-                                     Toast toast = Toast.makeText(getApplicationContext(), "Dodano do ulubionych", Toast.LENGTH_SHORT);
-                                     toast.show();
-                                 }
-                                 else{
-                                     Toast toast = Toast.makeText(getApplicationContext(), "Usunieto z ulubionych", Toast.LENGTH_SHORT);
-                                     toast.show();
-                                 }
+                                for (String item: favArray){
+                                    System.out.println(item.trim());
+                                    System.out.println(item.trim().equals(chosenStock.symbol));
+                                    if(item.trim().equals(chosenStock.symbol)){
+                                        FavList.remove(item.trim());
+                                        hasSymbol = true;
+                                    }
+                                }
+                                if(!hasSymbol){
+                                    FavList.add(chosenStock.symbol);
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Dodano do ulubionych", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                                else{
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Usunieto z ulubionych", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
 
-                             }
-                             else {
-                                 if(!currentFav.equals(chosenStock.symbol)){
-                                     FavList.add(currentFav);
-                                     FavList.add(chosenStock.symbol);
-                                 }
-                             }
+                            }
+                            else {
+                                if(!currentFav.equals(chosenStock.symbol)){
+                                    FavList.add(currentFav);
+                                    FavList.add(chosenStock.symbol);
+                                }
+                            }
 
-                             databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("fav").removeValue();
-                             if (FavList.size() > 0){
-                                 databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("fav").setValue(FavList);
-                             }
+                            databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("fav").removeValue();
+                            if (FavList.size() > 0){
+                                databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("fav").setValue(FavList);
+                            }
                         }
                         else {
                             databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("fav").setValue(chosenStock.symbol);

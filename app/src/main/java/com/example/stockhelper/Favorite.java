@@ -1,12 +1,7 @@
 package com.example.stockhelper;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +10,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,6 +21,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,10 +33,13 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Search extends AppCompatActivity {
+public class Favorite extends AppCompatActivity {
 
     SearchView searchView;
     ListView listView;
@@ -41,70 +48,92 @@ public class Search extends AppCompatActivity {
 
     String[] nameList={};
     ArrayAdapter<String> arrayAdapter;
-    private RequestQueue mQueue;
 
+    private FirebaseAuth mAuth;
+    private RequestQueue mQueue;
+    private String currentFav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_favorite);
 
-        searchProgressBar = findViewById(R.id.searchProgressBar);
-
-        arrayToList();
+        searchProgressBar = findViewById(R.id.searchProgressBarFav);
         loadHashMapFromJson();
         searchingViewList();
+
+        mAuth = FirebaseAuth.getInstance();
         mQueue = Volley.newRequestQueue(this);
 
     }
 
 
-
     public void searchingViewList() {
 
-        searchView =findViewById(R.id.searchBar);
-        listView = findViewById(R.id.listItem);
-
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, nameList);
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                searchProgressBar.setVisibility(View.VISIBLE);
-                jsonParse((String) adapterView.getItemAtPosition(i).toString());
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.child("Users").child(mAuth.getCurrentUser().getUid()).hasChild("fav")){
+                    currentFav = snapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("fav").getValue().toString();
+
+                    try {
+                        JSONArray jsonArray = new JSONArray(loadJSONFromAsset("AllCompaniesWithSymbolsTrimmed.json"));
+                        List<String> temporaryList= new ArrayList<String>();
+                        for(int i = 0; i <jsonArray.length(); i++){
+                            JSONObject companyDetail = jsonArray.getJSONObject(i);
+                            if (currentFav.matches(".*\\b"+companyDetail.getString("Symbol")+"\\b.*")) {
+                                System.out.println(companyDetail.getString("Name"));
+                                System.out.println(companyDetail.getString("Symbol"));
+                                System.out.println(currentFav.matches(".*\\b"+companyDetail.getString("Symbol")+"\\b.*"));
+                                temporaryList.add(companyDetail.getString("Name"));
+                            }
+                        }
+                        nameList = temporaryList.toArray(nameList);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    System.out.println(Arrays.toString(nameList));
+
+                    searchView =findViewById(R.id.searchBar);
+                    listView = findViewById(R.id.listItem);
+                    arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, android.R.id.text1, nameList);
+                    listView.setAdapter(arrayAdapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            searchProgressBar.setVisibility(View.VISIBLE);
+                            jsonParse((String) adapterView.getItemAtPosition(i).toString());
+                        }
+                    });
+                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            Favorite.this.arrayAdapter.getFilter().filter(query);
+
+                            return false;
+                        }
+                        @Override
+                        public boolean onQueryTextChange(String newText) {
+                            Favorite.this.arrayAdapter.getFilter().filter((newText));
+
+                            return false;
+                        }
+                    });
 
 
+
+
+                }
             }
-        });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                Search.this.arrayAdapter.getFilter().filter(query);
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Search.this.arrayAdapter.getFilter().filter((newText));
-                return false;
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
 
-
-    private void arrayToList(){
-        try {
-            JSONArray jsonArray = new JSONArray(loadJSONFromAsset("CompaniesArrayTrimmed.json"));
-
-            String[] temporaryList=new String[jsonArray.length()];
-            for(int i = 0; i <jsonArray.length(); i++){
-                temporaryList[i]=jsonArray.optString(i);
-
-            }
-            nameList = temporaryList;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     private String loadJSONFromAsset(String fileName) {
@@ -124,6 +153,7 @@ public class Search extends AppCompatActivity {
     }
 
     private void loadHashMapFromJson(){
+
         try {
             JSONArray jsonArray = new JSONArray(loadJSONFromAsset("AllCompaniesWithSymbolsTrimmed.json"));
 
@@ -132,9 +162,11 @@ public class Search extends AppCompatActivity {
                 stockSymbols.put(companyDetail.getString("Name"), companyDetail.getString("Symbol"));
 
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
 
     private void jsonParse(String stockName) {
@@ -157,14 +189,14 @@ public class Search extends AppCompatActivity {
                             String changePercentage = stock.getString("10. change percent");
                             Stock chosenStock = new Stock(stockSymbol, stockName, open, high, low, price, volume,
                                     lastTradingDay, prevClose, change, changePercentage);
-                            Intent intent = new Intent(Search.this, StockPage.class);
+                            Intent intent = new Intent(Favorite.this, StockPage.class);
                             intent.putExtra("chosenStock", chosenStock);
                             searchProgressBar.setVisibility(View.GONE);
                             startActivity(intent);
 
-                    } catch (JSONException e) {
+                        } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(Search.this, "Something gone wrong! Try again!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Favorite.this, "Something gone wrong! Try again!", Toast.LENGTH_LONG).show();
                             searchProgressBar.setVisibility(View.GONE);
                         }
                     }
@@ -176,5 +208,5 @@ public class Search extends AppCompatActivity {
         });
         mQueue.add(request);
     }
-}
 
+}
