@@ -73,6 +73,7 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
             case R.id.menuFavoriteButton:
                 break;
             case R.id.menuProfileButton:
+                openProfileActivity();
                 break;
             case R.id.menuSettingsButton:
                 break;
@@ -92,6 +93,18 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
         startActivity(searchIntent);
     }
 
+<<<<<<< Updated upstream
+=======
+    public void openFavActivity() {
+        Intent favIntent = new Intent(this,Favorite.class);
+        startActivity(favIntent);
+    }
+    public void openProfileActivity() {
+        Intent profileIntent = new Intent(this,Profile.class);
+        startActivity(profileIntent);
+    }
+
+>>>>>>> Stashed changes
 
     private void firebaseLogout() {
         mAuth.signOut();
