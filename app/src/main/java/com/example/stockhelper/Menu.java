@@ -103,6 +103,11 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
         startActivity(favIntent);
     }
 
+    public void openFavActivity() {
+        Intent favIntent = new Intent(this,Favorite.class);
+        startActivity(favIntent);
+    }
+
 
     private void firebaseLogout() {
         mAuth.signOut();
