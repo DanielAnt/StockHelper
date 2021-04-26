@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class StockPage extends AppCompatActivity implements View.OnClickListener {
@@ -46,7 +47,7 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
     private Stock chosenStock;
     private FirebaseAuth mAuth;
     private List<String> FavList;
-    private List<SharesBought> buyList;
+    private HashMap buyList;
     EditText input;
 
     SharesBought shares = new SharesBought();
@@ -192,7 +193,7 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
                     public void onClick(DialogInterface dialog, int which) {
                         int number = Integer.parseInt(input.getText().toString());
 
-                        System.out.println(number);
+                        //System.out.println(number);
 
 
                         chosenStock = getIntent().getParcelableExtra("chosenStock");
@@ -202,18 +203,26 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if(dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").hasChild("purchasedStocks")){
-                                    buyList = (List) dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").getValue();
-                                    buyList.add(new SharesBought(chosenStock.symbol,chosenStock.price,number));
+                                    buyList = (HashMap) dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").getValue();
+                                    HashMap tempHash = new HashMap();
+                                    tempHash.put("number", number);
+                                    tempHash.put("price", chosenStock.price);
+                                    buyList.put(chosenStock.symbol,tempHash);
 
                                     mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").setValue(buyList);
-
+                                    System.out.println(" nie tutaj");
                                     System.out.println(buyList);
 
                                 }
                                 else{
-                                    buyList = new ArrayList<>();
-                                    buyList.add(new SharesBought(chosenStock.symbol,chosenStock.price,number));
-                                    mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").setValue(buyList);
+
+                                    HashMap buyList = new HashMap();
+                                    buyList.put("number", number);
+                                    buyList.put("price", chosenStock.price);
+
+                                    mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").child(chosenStock.symbol).setValue(buyList);
+                                    System.out.println("tutaj");
+                                    System.out.println(buyList);
                                 }
                             }
 
