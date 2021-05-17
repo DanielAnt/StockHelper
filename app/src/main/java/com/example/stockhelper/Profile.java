@@ -221,6 +221,7 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
                             String price = stock.getString("05. price");
                             stockPrice = Float.parseFloat(price);
                             Float balance = currentMoney+stockPrice*stockQunatity;
+                            balance = (float) Math.round(balance*100)/100;
                             databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("money").setValue(balance);
                             accBText.setText(Float.toString(balance));
 

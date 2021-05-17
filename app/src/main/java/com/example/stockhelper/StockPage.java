@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -186,71 +187,77 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
                 builder.setTitle("The number of Stocks to be bought");
                 builder.setMessage("How many stock you want to buy?");
                 input = new EditText(this);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
                 builder.setView(input);
                 builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        int number = Integer.parseInt(input.getText().toString());
-
-                        //System.out.println(number);
-
+                        int number;
+                        String tempNumber = input.getText().toString();
+                        if(!tempNumber.isEmpty()) {
+                             number = Integer.parseInt(input.getText().toString());
+                        }else{
+                             number =0;
+                        }
 
                         chosenStock = getIntent().getParcelableExtra("chosenStock");
                         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+                        if (number != 0) {
 
-                        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").hasChild("purchasedStocks")){
-                                    buyList = (HashMap) dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").getValue();
-                                    HashMap tempHash = new HashMap();
-                                    int quantity = 0;
-                                    if (buyList.containsKey(chosenStock.symbol)) {
-                                        quantity = Integer.parseInt(dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").child(chosenStock.symbol).child("-- number --").getValue().toString());
-                                    }
 
-                                    tempHash.put("-- number --", number + quantity);
-                                    buyList.put(chosenStock.symbol, tempHash);
-                                    Object money = dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("money").getValue();
-                                    float kasa = Float.parseFloat(money.toString());
-                                    float ilosc = (float) number * Float.parseFloat(chosenStock.price.toString());
-                                    float finalPrice = kasa - ilosc;
+                            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").hasChild("purchasedStocks")) {
+                                        buyList = (HashMap) dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").getValue();
+                                        HashMap tempHash = new HashMap();
+                                        int quantity = 0;
+                                        if (buyList.containsKey(chosenStock.symbol)) {
+                                            quantity = Integer.parseInt(dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").child(chosenStock.symbol).child("-- number --").getValue().toString());
+                                        }
 
-                                    if (ilosc < kasa) {
-                                        mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").setValue(buyList);
-                                        mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("money").setValue(String.format("%.2f", finalPrice));
+                                        tempHash.put("-- number --", number + quantity);
+                                        buyList.put(chosenStock.symbol, tempHash);
+                                        Object money = dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("money").getValue();
+                                        float kasa = Float.parseFloat(money.toString());
+                                        float ilosc = (float) number * Float.parseFloat(chosenStock.price.toString());
+                                        float finalPrice = kasa - ilosc;
+
+                                        if (ilosc < kasa) {
+                                            mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").setValue(buyList);
+                                            mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("money").setValue(String.format("%.2f", finalPrice));
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Not enough money!!", Toast.LENGTH_LONG).show();
+
+                                        }
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "Zało kasy", Toast.LENGTH_LONG).show();
-                                        System.out.println("zamalo kasy ");
+
+                                        HashMap buyList = new HashMap();
+                                        buyList.put("-- number -- ", number);
+
+                                        Object money = dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("money").getValue();
+                                        float kasa = Float.parseFloat(money.toString());
+                                        float ilosc = (float) number * Float.parseFloat(chosenStock.price.toString());
+
+                                        float finalPrice = kasa - ilosc;
+                                        if (ilosc < kasa) {
+                                            mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").child(chosenStock.symbol).setValue(buyList);
+                                            mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("money").setValue(String.format("%.2f", finalPrice));
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Zało kasy", Toast.LENGTH_LONG).show();
+                                            System.out.println("zamalo kasy ");
+                                        }
+
                                     }
                                 }
-                                else{
 
-                                    HashMap buyList = new HashMap();
-                                    buyList.put("-- number -- ", number);
-
-                                    Object money = dataSnapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("money").getValue();
-                                    float kasa = Float.parseFloat(money.toString());
-                                    float ilosc = (float) number * Float.parseFloat(chosenStock.price.toString());
-
-                                    float finalPrice =  kasa - ilosc;
-                                    if(ilosc < kasa){
-                                        mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("purchasedStocks").child(chosenStock.symbol).setValue(buyList);
-                                        mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("game").child("money").setValue(String.format("%.2f",finalPrice));
-                                    }else{
-                                        Toast.makeText(getApplicationContext(),"Zało kasy",Toast.LENGTH_LONG).show();
-                                        System.out.println("zamalo kasy ");
-                                    }
-
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    databaseError.toException();
                                 }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                databaseError.toException();
-                            }
-                        });
+                            });
+                        }
                     }
                 });
 
