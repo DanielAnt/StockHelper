@@ -187,7 +187,7 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
                 builder.setTitle("The number of Stocks to be bought");
                 builder.setMessage("How many stock you want to buy?");
                 input = new EditText(this);
-                input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 builder.setView(input);
                 builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
 
@@ -203,7 +203,7 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
 
                         chosenStock = getIntent().getParcelableExtra("chosenStock");
                         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-                        if (number != 0) {
+                        if (number > 0) {
 
 
                             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
