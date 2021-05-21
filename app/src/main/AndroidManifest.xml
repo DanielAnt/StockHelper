@@ -14,6 +14,10 @@
         <activity android:name=".StockPriceHistory"></activity>
         <activity android:name=".StockPage" />
         <activity android:name=".Search" />
+<<<<<<< HEAD
+        <activity android:name=".Profile"></activity>
+=======
+>>>>>>> master
         <activity android:name=".Favorite" />
         <activity android:name=".Menu" />
         <activity android:name=".Register" />

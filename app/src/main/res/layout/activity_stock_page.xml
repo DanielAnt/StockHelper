@@ -192,4 +192,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+<<<<<<< HEAD
+    <Button
+        android:id="@+id/buyStocks"
+        android:layout_width="147dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="141dp"
+        android:layout_marginEnd="143dp"
+        android:layout_marginBottom="20dp"
+        android:text="Buy Stocks"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+=======
+>>>>>>> master
 </androidx.constraintlayout.widget.ConstraintLayout>
