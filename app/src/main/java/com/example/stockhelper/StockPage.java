@@ -75,6 +75,9 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
         buyButton.setOnClickListener(this);
         mAuth = FirebaseAuth.getInstance();
 
+        buyButton.setVisibility(View.GONE);
+        setBuyButtonVisibility();
+
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
         df.setMinimumFractionDigits(0);
@@ -98,6 +101,8 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
         stockLowValue.setText(df.format(Float.parseFloat(chosenStock.low)) + "$");
         stockHighValue.setText(df.format(Float.parseFloat(chosenStock.high)) + "$");
         stockPrevCloseValue.setText(df.format(Float.parseFloat(chosenStock.pervClose)) + "$");
+
+
     }
 
     @Override
@@ -228,8 +233,7 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
                                     databaseError.toException();
                                 }
                             });
-                        }
-                        else{
+                        } else {
                             Toast.makeText(getApplicationContext(), "You must enter number bigger then 0!", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -246,6 +250,21 @@ public class StockPage extends AppCompatActivity implements View.OnClickListener
         }
     }
 
+    private void setBuyButtonVisibility() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child("Users").child(mAuth.getCurrentUser().getUid()).hasChild("game")) {
+                    buyButton.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+    }
 }
 
 

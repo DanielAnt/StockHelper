@@ -23,7 +23,6 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
     private Button searchButton;
     private Button favoriteButton;
     private Button profileButton;
-    private Button settingsButton;
     private Button logoutButton;
     private FirebaseAuth mAuth;
     private String username;
@@ -34,34 +33,21 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_menu);
 
         mAuth = FirebaseAuth.getInstance();
+        username = getIntent().getExtras().getString("username");
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                username = snapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("username").getValue(String.class);
-                welcomeText.setText("Welcome " + username + "!");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         welcomeText = findViewById(R.id.menuWelcomeText);
         searchButton = findViewById(R.id.menuSearchButton);
         favoriteButton = findViewById(R.id.menuFavoriteButton);
         profileButton = findViewById(R.id.menuProfileButton);
-        settingsButton = findViewById(R.id.menuSettingsButton);
         logoutButton = findViewById(R.id.menuLogoutButton);
 
         searchButton.setOnClickListener(this);
         favoriteButton.setOnClickListener(this);
         profileButton.setOnClickListener(this);
-        settingsButton.setOnClickListener(this);
         logoutButton.setOnClickListener(this);
 
+        welcomeText.setText("Welcome " + username + "!");
     }
 
     @Override
@@ -76,17 +62,11 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
             case R.id.menuProfileButton:
                 openProfileActivity();
                 break;
-            case R.id.menuSettingsButton:
-                break;
             case R.id.menuLogoutButton:
                 Toast.makeText(Menu.this, "Logged out", Toast.LENGTH_LONG).show();
                 firebaseLogout();
                 break;
-
     }
-
-
-
 }
 
     public void openSearchActivity(){
@@ -103,10 +83,8 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
         startActivity(favIntent);
     }
 
-
     private void firebaseLogout() {
         mAuth.signOut();
         startActivity(new Intent(this, Login.class));
-
     }
 }
