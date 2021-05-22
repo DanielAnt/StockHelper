@@ -37,6 +37,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:20.0.3'
     implementation 'com.google.firebase:firebase-database:19.7.0'
     implementation 'com.android.volley:volley:1.1.0'
+    implementation "org.mockito:mockito-core:3.+"
     implementation 'com.jjoe64:graphview:4.2.2'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

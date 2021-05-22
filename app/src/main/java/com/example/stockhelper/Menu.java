@@ -103,10 +103,8 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
         startActivity(favIntent);
     }
 
-
     private void firebaseLogout() {
         mAuth.signOut();
         startActivity(new Intent(this, Login.class));
-
     }
 }

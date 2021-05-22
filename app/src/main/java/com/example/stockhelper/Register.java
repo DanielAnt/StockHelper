@@ -2,6 +2,7 @@ package com.example.stockhelper;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.PatternsCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,9 +19,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+
 public class Register extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText editTextUsername;
+    public EditText editTextUsername;
     private EditText editTextEmail;
     private EditText editTextPassword;
     private EditText editTextRepeatedPassword;
@@ -59,9 +61,80 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String repeatedPassword = editTextRepeatedPassword.getText().toString().trim();
+        boolean validUsername = false;
+        boolean validEmail = false;
+        boolean validPassword = false;
+
+        switch (ValidateUsername(username)){
+            case 0:
+                validUsername = true;
+                break;
+            case 1:
+                editTextUsername.setError("This field is required!");
+                editTextUsername.requestFocus();
+                break;
+            case 2:
+                editTextUsername.setError("Username must be at least 6 characters!");
+                editTextUsername.requestFocus();
+                break;
+            case 3:
+                editTextUsername.setError("Username cannot be longer than 16 characters!");
+                editTextUsername.requestFocus();
+                break;
+        }
+
+        switch (ValidateEmail(email)){
+            case 0:
+                validUsername = true;
+                break;
+            case 1:
+                editTextEmail.setError("This field is required!");
+                editTextEmail.requestFocus();
+                break;
+            case 2:
+                editTextEmail.setError("Please provide valid email!");
+                editTextEmail.requestFocus();
+                break;
+            case 3:
+                editTextEmail.setError("Email must be at least 8 characters!");
+                editTextEmail.requestFocus();
+                break;
+            case 4:
+                editTextEmail.setError("Email cannot be longer than 40 characters!");
+                editTextEmail.requestFocus();
+                break;
+        }
+
+        switch (ValidatePassword(password, repeatedPassword)){
+            case 0:
+                validPassword = true;
+                break;
+            case 1:
+                editTextPassword.setError("This field is required!");
+                editTextPassword.requestFocus();
+                break;
+            case 2:
+                editTextRepeatedPassword.setError("This field is required!");
+                editTextRepeatedPassword.requestFocus();
+                break;
+            case 3:
+                editTextRepeatedPassword.setError("Passwords don't match!");
+                editTextRepeatedPassword.requestFocus();
+                break;
+            case 4:
+                editTextPassword.setError("Password must be at least 6 characters!");
+                editTextPassword.requestFocus();
+                break;
+            case 5:
+                editTextPassword.setError("Password cannot be longer than 40 characters!");
+                editTextPassword.requestFocus();
+                break;
+        }
 
 
-        if (ValidateUsername(username) && ValidateEmail(email) && ValidatePassword(password, repeatedPassword)) {
+
+
+        if(validEmail && validUsername && validPassword) {
             registerProgressBar.setVisibility(View.VISIBLE);
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -94,60 +167,56 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         }
     }
 
-    private void ReturnToLoginPage(){
+    private void ReturnToLoginPage() {
         startActivity(new Intent(this, Login.class));
     }
 
-    public boolean ValidateUsername(String username) {
+    public int ValidateUsername(String username) {
         if (username.isEmpty()) {
-            editTextUsername.setError("This field is required!");
-            editTextUsername.requestFocus();
-            return false;
+            return 1;
         }
-        return true;
+        if (username.length() < 6) {
+            return 2;
+        }
+        if (username.length() > 16) {
+            return 3;
+        }
+        return 0;
     }
 
-    public boolean ValidateEmail(String email) {
+    public int ValidateEmail(String email) {
         if (email.isEmpty()) {
-            editTextEmail.setError("This field is required!");
-            editTextEmail.requestFocus();
-            return false;
+            return 1;
         }
-
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError("Please provide valid email");
-            editTextEmail.requestFocus();
-            return false;
+        if (!PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()) {
+            return 2;
         }
-        return true;
+        if (email.length() < 8) {
+            return 3;
+        }
+        if (email.length() > 40) {
+            return 4;
+        }
+        return 0;
     }
 
-    public boolean ValidatePassword(String password, String repeatedPassword) {
+    public int ValidatePassword(String password, String repeatedPassword) {
         if (password.isEmpty()) {
-            editTextPassword.setError("This field is required!");
-            editTextPassword.requestFocus();
-            return false;
+            return 1;
         }
-
         if (repeatedPassword.isEmpty()) {
-            editTextRepeatedPassword.setError("This field is required!");
-            editTextRepeatedPassword.requestFocus();
-            return false;
+            return 2;
         }
-
-
         if (!password.equals(repeatedPassword)) {
-            editTextRepeatedPassword.setError("Passwords don't match!");
-            editTextRepeatedPassword.requestFocus();
-            return false;
+            return 3;
         }
-
         if (password.length() < 6) {
-            editTextPassword.setError("Password must be at least 6 characters!");
-            editTextPassword.requestFocus();
-            return false;
+            return 4;
         }
-        return true;
+        if (password.length() > 40) {
+            return 5;
+        }
+        return 0;
     }
 
 }
