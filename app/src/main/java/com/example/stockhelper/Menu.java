@@ -66,11 +66,7 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
                 Toast.makeText(Menu.this, "Logged out", Toast.LENGTH_LONG).show();
                 firebaseLogout();
                 break;
-
     }
-
-
-
 }
 
     public void openSearchActivity(){
