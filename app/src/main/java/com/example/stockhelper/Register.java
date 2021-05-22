@@ -85,7 +85,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
         switch (ValidateEmail(email)){
             case 0:
-                validUsername = true;
+                validEmail = true;
                 break;
             case 1:
                 editTextEmail.setError("This field is required!");
@@ -130,10 +130,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 editTextPassword.requestFocus();
                 break;
         }
-
-
-
-
         if(validEmail && validUsername && validPassword) {
             registerProgressBar.setVisibility(View.VISIBLE);
             mAuth.createUserWithEmailAndPassword(email, password)
