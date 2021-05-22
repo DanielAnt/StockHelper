@@ -65,42 +65,49 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 startActivity(new Intent(this, Register.class));
                 break;
             case R.id.login_button:
-                email = emailInput.getText().toString();
-                password = passwordInput.getText().toString();
-
-                if (email.isEmpty()) {
-                    emailInput.setError("This field is required!");
-                    emailInput.requestFocus();
-                    return;
-                }
-
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    emailInput.setError("Please provide valid email");
-                    emailInput.requestFocus();
-                    return;
-                }
-
-                if (password.isEmpty()) {
-                    passwordInput.setError("This field is required!");
-                    passwordInput.requestFocus();
-                    return;
-                }
-
-                loginProgressBar.setVisibility(View.VISIBLE);
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    loginProgressBar.setVisibility(View.GONE);
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    startActivity(new Intent(Login.this, Menu.class));
-                                } else {
-                                    loginProgressBar.setVisibility(View.GONE);
-                                    Toast.makeText(Login.this, "Wrong email or password!", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+                AppLogin();
         }
     }
+
+
+    private void AppLogin() {
+        email = emailInput.getText().toString();
+        password = passwordInput.getText().toString();
+
+        if (email.isEmpty()) {
+            emailInput.setError("This field is required!");
+            emailInput.requestFocus();
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailInput.setError("Please provide valid email");
+            emailInput.requestFocus();
+            return;
+        }
+
+        if (password.isEmpty()) {
+            passwordInput.setError("This field is required!");
+            passwordInput.requestFocus();
+            return;
+        }
+
+        loginProgressBar.setVisibility(View.VISIBLE);
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            loginProgressBar.setVisibility(View.GONE);
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            startActivity(new Intent(Login.this, Menu.class));
+                        } else {
+                            loginProgressBar.setVisibility(View.GONE);
+                            Toast.makeText(Login.this, "Wrong email or password!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+
 }

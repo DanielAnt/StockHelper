@@ -3,6 +3,7 @@ package com.example.stockhelper;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -42,103 +43,111 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         registryButton.setOnClickListener(this);
 
 
-
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.registerButton:
                 RegisterUser();
                 break;
         }
     }
 
-    public void RegisterUser(){
+    public void RegisterUser() {
         String username = editTextUsername.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String repeatedPassword = editTextRepeatedPassword.getText().toString().trim();
 
 
+        if (ValidateUsername(username) && ValidateEmail(email) && ValidatePassword(password, repeatedPassword)) {
+            registerProgressBar.setVisibility(View.VISIBLE);
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                User user = new User(username, email);
+                                FirebaseDatabase.getInstance().getReference("Users")
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(Register.this, "You have registered successfully!", Toast.LENGTH_LONG).show();
+                                            registerProgressBar.setVisibility(View.GONE);
+                                            ReturnToLoginPage();
+                                        } else {
+                                            Toast.makeText(Register.this, "Something gone wrong! Try again!", Toast.LENGTH_LONG).show();
+                                            registerProgressBar.setVisibility(View.GONE);
+                                        }
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(Register.this, "Something gone wrong! Try again!", Toast.LENGTH_LONG).show();
+                                registerProgressBar.setVisibility(View.GONE);
+                            }
+                        }
+                    });
 
-        if(username.isEmpty()){
+        }
+    }
+
+    private void ReturnToLoginPage(){
+        startActivity(new Intent(this, Login.class));
+    }
+
+    public boolean ValidateUsername(String username) {
+        if (username.isEmpty()) {
             editTextUsername.setError("This field is required!");
             editTextUsername.requestFocus();
-            return;
+            return false;
         }
+        return true;
+    }
 
-        if(email.isEmpty()){
+    public boolean ValidateEmail(String email) {
+        if (email.isEmpty()) {
             editTextEmail.setError("This field is required!");
             editTextEmail.requestFocus();
-            return;
+            return false;
         }
 
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Please provide valid email");
             editTextEmail.requestFocus();
-            return;
+            return false;
         }
+        return true;
+    }
 
-        if(password.isEmpty()){
+    public boolean ValidatePassword(String password, String repeatedPassword) {
+        if (password.isEmpty()) {
             editTextPassword.setError("This field is required!");
             editTextPassword.requestFocus();
-            return;
+            return false;
         }
 
-        if(repeatedPassword.isEmpty()){
+        if (repeatedPassword.isEmpty()) {
             editTextRepeatedPassword.setError("This field is required!");
             editTextRepeatedPassword.requestFocus();
-            return;
+            return false;
         }
 
 
-
-        if(!password.equals(repeatedPassword)){
+        if (!password.equals(repeatedPassword)) {
             editTextRepeatedPassword.setError("Passwords don't match!");
             editTextRepeatedPassword.requestFocus();
-            return;
+            return false;
         }
 
-        if(password.length() < 6){
+        if (password.length() < 6) {
             editTextPassword.setError("Password must be at least 6 characters!");
             editTextPassword.requestFocus();
-            return;
+            return false;
         }
-
-
-        registerProgressBar.setVisibility(View.VISIBLE);
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            User user = new User(username, email);
-                            FirebaseDatabase.getInstance().getReference("Users")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(Register.this, "You have registered successfully!", Toast.LENGTH_LONG).show();
-                                        registerProgressBar.setVisibility(View.GONE);
-                                    }
-                                    else{
-                                        Toast.makeText(Register.this, "Something gone wrong! Try again!", Toast.LENGTH_LONG).show();
-                                        registerProgressBar.setVisibility(View.GONE);
-                                    }
-                                }
-                            });
-                        }
-                        else{
-                            Toast.makeText(Register.this, "Something gone wrong! Try again!", Toast.LENGTH_LONG).show();
-                            registerProgressBar.setVisibility(View.GONE);
-                        }
-                    }
-                });
-
-
-
+        return true;
     }
 
 }
