@@ -43,8 +43,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
         registryButton = findViewById(R.id.registerButton);
         registryButton.setOnClickListener(this);
-
-
     }
 
     @Override
@@ -65,7 +63,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         boolean validEmail = false;
         boolean validPassword = false;
 
-        switch (ValidateUsername(username)){
+        switch (ValidateUsername(username)) {
             case 0:
                 validUsername = true;
                 break;
@@ -83,7 +81,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 break;
         }
 
-        switch (ValidateEmail(email)){
+        switch (ValidateEmail(email)) {
             case 0:
                 validEmail = true;
                 break;
@@ -105,7 +103,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 break;
         }
 
-        switch (ValidatePassword(password, repeatedPassword)){
+        switch (ValidatePassword(password, repeatedPassword)) {
             case 0:
                 validPassword = true;
                 break;
@@ -130,7 +128,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 editTextPassword.requestFocus();
                 break;
         }
-        if(validEmail && validUsername && validPassword) {
+
+        if (validEmail && validUsername && validPassword) {
             registerProgressBar.setVisibility(View.VISIBLE);
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -159,7 +158,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                             }
                         }
                     });
-
         }
     }
 

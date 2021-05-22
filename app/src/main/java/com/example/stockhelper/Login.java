@@ -18,6 +18,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,6 +33,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private ProgressBar loginProgressBar;
     private Button submitButton;
     private FirebaseAuth mAuth;
+    private String username;
+
 
 
     @Override
@@ -53,9 +60,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
         FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser != null) {
-            startActivity(new Intent(Login.this, Menu.class));
+            loginProgressBar.setVisibility(View.VISIBLE);
+            DataBaseRequest();
         }
-
     }
 
     @Override
@@ -69,6 +76,30 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    private void DataBaseRequest(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                username = snapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("username").getValue(String.class);
+                ChangeActivity(username);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                loginProgressBar.setVisibility(View.GONE);
+                Toast.makeText(Login.this, "Couldn't login!", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void ChangeActivity(String username){
+        loginProgressBar.setVisibility(View.GONE);
+        System.out.println(username);
+        Intent intent = new Intent(this, Menu.class);
+        intent.putExtra("username", username);
+        startActivity(intent);
+    }
 
     private void AppLogin() {
         email = emailInput.getText().toString();
@@ -98,9 +129,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            loginProgressBar.setVisibility(View.GONE);
                             FirebaseUser user = mAuth.getCurrentUser();
-                            startActivity(new Intent(Login.this, Menu.class));
+                            DataBaseRequest();
                         } else {
                             loginProgressBar.setVisibility(View.GONE);
                             Toast.makeText(Login.this, "Wrong email or password!", Toast.LENGTH_LONG).show();
