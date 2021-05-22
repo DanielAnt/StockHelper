@@ -41,7 +41,7 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
     private LineGraphSeries<DataPoint> graphData;
     private RequestQueue mQueue;
     private GraphView graph;
-    private String[]  dates;
+    private String[] dates;
     private Stock chosenStock;
     private ProgressBar graphProgressBar;
 
@@ -72,7 +72,7 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.graphOneDayButton:
                 graph.setVisibility(View.GONE);
                 graphProgressBar.setVisibility(View.VISIBLE);
@@ -102,7 +102,7 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
     }
 
     private void showAllTime(String stockSymbol) {
-        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol="  +stockSymbol+  "&apikey=IBBOJPT8T6NZA44K";
+        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=" + stockSymbol + "&apikey=IBBOJPT8T6NZA44K";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -113,13 +113,13 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                             int datesLength = stock.length();
                             dates = new String[datesLength];
                             datesLength = datesLength - 1;
-                            while(jsonKeys.hasNext()){
+                            while (jsonKeys.hasNext()) {
                                 dates[datesLength] = jsonKeys.next();
-                                datesLength --;
+                                datesLength--;
                             }
                             graphData = new LineGraphSeries();
 
-                            for(int i = 0; i < dates.length; i++) {
+                            for (int i = 0; i < dates.length; i++) {
                                 JSONObject stockDay = stock.getJSONObject(dates[i]);
                                 String price = stockDay.getString("4. close");
                                 String[] date = dates[i].split("-");
@@ -171,10 +171,8 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
     }
 
 
-
-
     private void showOneYear(String stockSymbol) {
-        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol="  +stockSymbol+  "&apikey=IBBOJPT8T6NZA44K";
+        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=" + stockSymbol + "&apikey=IBBOJPT8T6NZA44K";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -184,30 +182,30 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                             JSONObject stock = response.getJSONObject("Weekly Time Series");
                             Iterator<String> jsonKeys = stock.keys();
                             int datesLength = stock.length();
-                            if(datesLength < timeRange + 1){
+                            if (datesLength < timeRange + 1) {
                                 dates = new String[datesLength];
                                 datesLength--;
-                            }else{
+                            } else {
                                 dates = new String[timeRange];
                                 datesLength = timeRange - 1;
                             }
                             int iter = 1;
-                            while(jsonKeys.hasNext() && iter <= timeRange){
+                            while (jsonKeys.hasNext() && iter <= timeRange) {
                                 dates[datesLength] = jsonKeys.next();
-                                datesLength --;
-                                iter ++;
+                                datesLength--;
+                                iter++;
                             }
                             graphData = new LineGraphSeries();
-                            if(dates.length == timeRange){
-                                for(int i = 0; i < timeRange; i++){
+                            if (dates.length == timeRange) {
+                                for (int i = 0; i < timeRange; i++) {
                                     JSONObject stockDay = stock.getJSONObject(dates[i]);
                                     String price = stockDay.getString("4. close");
                                     String[] date = dates[i].split("-");
                                     Calendar cal = new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[2]));
                                     graphData.appendData(new DataPoint(cal.getTimeInMillis(), Double.parseDouble(price)), true, timeRange);
                                 }
-                            }else{
-                                for(int i = 0; i < dates.length; i++){
+                            } else {
+                                for (int i = 0; i < dates.length; i++) {
                                     JSONObject stockDay = stock.getJSONObject(dates[i]);
                                     String price = stockDay.getString("4. close");
                                     String[] date = dates[i].split("-");
@@ -261,9 +259,8 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
     }
 
 
-
     private void showOneMonth(String stockSymbol) {
-        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="  +stockSymbol+  "&apikey=IBBOJPT8T6NZA44K";
+        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + stockSymbol + "&apikey=IBBOJPT8T6NZA44K";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -273,30 +270,30 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                             JSONObject stock = response.getJSONObject("Time Series (Daily)");
                             Iterator<String> jsonKeys = stock.keys();
                             int datesLength = stock.length();
-                            if(datesLength < timeRange + 1){
+                            if (datesLength < timeRange + 1) {
                                 dates = new String[datesLength];
                                 datesLength--;
-                            }else{
+                            } else {
                                 dates = new String[timeRange];
                                 datesLength = timeRange - 1;
                             }
                             int iter = 1;
-                            while(jsonKeys.hasNext() && iter <= timeRange){
+                            while (jsonKeys.hasNext() && iter <= timeRange) {
                                 dates[datesLength] = jsonKeys.next();
-                                datesLength --;
-                                iter ++;
+                                datesLength--;
+                                iter++;
                             }
                             graphData = new LineGraphSeries();
-                            if(dates.length == timeRange){
-                                for(int i = 0; i < timeRange; i++){
+                            if (dates.length == timeRange) {
+                                for (int i = 0; i < timeRange; i++) {
                                     JSONObject stockDay = stock.getJSONObject(dates[i]);
                                     String price = stockDay.getString("4. close");
                                     String[] date = dates[i].split("-");
                                     Calendar cal = new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[2]));
                                     graphData.appendData(new DataPoint(cal.getTimeInMillis(), Double.parseDouble(price)), true, timeRange);
                                 }
-                            }else{
-                                for(int i = 0; i < dates.length; i++){
+                            } else {
+                                for (int i = 0; i < dates.length; i++) {
                                     JSONObject stockDay = stock.getJSONObject(dates[i]);
                                     String price = stockDay.getString("4. close");
                                     String[] date = dates[i].split("-");
@@ -350,7 +347,7 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
     }
 
     private void showFiveDays(String stockSymbol) {
-        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="  +stockSymbol+  "&interval=15min&apikey=IBBOJPT8T6NZA44K";
+        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + stockSymbol + "&interval=15min&apikey=IBBOJPT8T6NZA44K";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -361,13 +358,13 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                             Iterator<String> jsonKeys = stock.keys();
                             int datesLength = stock.length();
                             dates = new String[datesLength];
-                            datesLength --;
-                            while(jsonKeys.hasNext()){
+                            datesLength--;
+                            while (jsonKeys.hasNext()) {
                                 dates[datesLength] = jsonKeys.next();
-                                datesLength --;
+                                datesLength--;
                             }
                             graphData = new LineGraphSeries();
-                            for(int i = 0; i < dates.length; i++){
+                            for (int i = 0; i < dates.length; i++) {
                                 JSONObject stockDay = stock.getJSONObject(dates[i]);
                                 String price = stockDay.getString("4. close");
                                 String[] dateAndTime = dates[i].split(" ");
@@ -384,7 +381,7 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                             graph.getViewport().setMinX(graphData.getLowestValueX());
                             graph.getViewport().setMaxX(graphData.getHighestValueX());
                             graph.getViewport().setMinY(graphData.getLowestValueY() * 0.9);
-                            graph.getViewport().setMaxY(graphData.getHighestValueY()*1.1);
+                            graph.getViewport().setMaxY(graphData.getHighestValueY() * 1.1);
                             graph.getViewport().setScalable(true);
                             graphData.setTitle(chosenStock.symbol);
 
@@ -420,7 +417,7 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
     }
 
     private void showOneDay(String stockSymbol) {
-        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="  +stockSymbol+  "&interval=5min&apikey=IBBOJPT8T6NZA44K";
+        String url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + stockSymbol + "&interval=5min&apikey=IBBOJPT8T6NZA44K";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -431,13 +428,13 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                             Iterator<String> jsonKeys = stock.keys();
                             int datesLength = stock.length();
                             dates = new String[datesLength];
-                            datesLength --;
-                            while(jsonKeys.hasNext()){
+                            datesLength--;
+                            while (jsonKeys.hasNext()) {
                                 dates[datesLength] = jsonKeys.next();
-                                datesLength --;
+                                datesLength--;
                             }
                             graphData = new LineGraphSeries();
-                            for(int i = 0; i < dates.length; i++){
+                            for (int i = 0; i < dates.length; i++) {
                                 JSONObject stockDay = stock.getJSONObject(dates[i]);
                                 String price = stockDay.getString("4. close");
                                 String[] dateAndTime = dates[i].split(" ");
@@ -454,7 +451,7 @@ public class StockPriceHistory extends AppCompatActivity implements View.OnClick
                             graph.getViewport().setMinX(graphData.getLowestValueX());
                             graph.getViewport().setMaxX(graphData.getHighestValueX());
                             graph.getViewport().setMinY(graphData.getLowestValueY() * 0.9);
-                            graph.getViewport().setMaxY(graphData.getHighestValueY()*1.1);
+                            graph.getViewport().setMaxY(graphData.getHighestValueY() * 1.1);
                             graph.getViewport().setScalable(true);
                             graphData.setTitle(chosenStock.symbol);
 

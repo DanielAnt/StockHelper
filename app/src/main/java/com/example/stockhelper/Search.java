@@ -38,9 +38,9 @@ public class Search extends AppCompatActivity {
     ListView listView;
     ProgressBar searchProgressBar;
     Map stockSymbols = new HashMap();
-
-    String[] nameList={};
+    String[] nameList = {};
     ArrayAdapter<String> arrayAdapter;
+
     private RequestQueue mQueue;
 
 
@@ -59,12 +59,9 @@ public class Search extends AppCompatActivity {
     }
 
 
-
     public void searchingViewList() {
-
-        searchView =findViewById(R.id.searchBar);
+        searchView = findViewById(R.id.searchBar);
         listView = findViewById(R.id.listItem);
-
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, nameList);
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -72,8 +69,6 @@ public class Search extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 searchProgressBar.setVisibility(View.VISIBLE);
                 jsonParse((String) adapterView.getItemAtPosition(i).toString());
-
-
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -82,6 +77,7 @@ public class Search extends AppCompatActivity {
                 Search.this.arrayAdapter.getFilter().filter(query);
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 Search.this.arrayAdapter.getFilter().filter((newText));
@@ -91,14 +87,12 @@ public class Search extends AppCompatActivity {
     }
 
 
-    private void arrayToList(){
+    private void arrayToList() {
         try {
             JSONArray jsonArray = new JSONArray(loadJSONFromAsset("CompaniesArrayTrimmed.json"));
-
-            String[] temporaryList=new String[jsonArray.length()];
-            for(int i = 0; i <jsonArray.length(); i++){
-                temporaryList[i]=jsonArray.optString(i);
-
+            String[] temporaryList = new String[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++) {
+                temporaryList[i] = jsonArray.optString(i);
             }
             nameList = temporaryList;
         } catch (JSONException e) {
@@ -123,14 +117,13 @@ public class Search extends AppCompatActivity {
         return json;
     }
 
-    private void loadHashMapFromJson(){
+    private void loadHashMapFromJson() {
         try {
             JSONArray jsonArray = new JSONArray(loadJSONFromAsset("AllCompaniesWithSymbolsTrimmed.json"));
 
-            for(int i = 0; i <jsonArray.length(); i++){
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject companyDetail = jsonArray.getJSONObject(i);
                 stockSymbols.put(companyDetail.getString("Name"), companyDetail.getString("Symbol"));
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -139,7 +132,7 @@ public class Search extends AppCompatActivity {
 
     private void jsonParse(String stockName) {
         String stockSymbol = stockSymbols.get(stockName).toString();
-        String url = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +stockSymbol+ "&apikey=IBBOJPT8T6NZA44K";
+        String url = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + stockSymbol + "&apikey=IBBOJPT8T6NZA44K";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -161,8 +154,7 @@ public class Search extends AppCompatActivity {
                             intent.putExtra("chosenStock", chosenStock);
                             searchProgressBar.setVisibility(View.GONE);
                             startActivity(intent);
-
-                    } catch (JSONException e) {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(Search.this, "Something gone wrong! Try again!", Toast.LENGTH_LONG).show();
                             searchProgressBar.setVisibility(View.GONE);

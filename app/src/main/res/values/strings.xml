@@ -26,4 +26,6 @@
     <string name="history_range_1d">1D</string>
     <string name="stock_price_history">Price History</string>
     <string name="add_to_fav">Add to Fav</string>
+    <string name="profile_start_buton_text">Start</string>
+    <string name="profile_balance_text">Your current account balance:</string>
 </resources>

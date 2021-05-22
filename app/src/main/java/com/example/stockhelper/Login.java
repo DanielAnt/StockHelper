@@ -45,10 +45,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
         registerText.setOnClickListener(this);
         submitButton.setOnClickListener(this);
-
-
-
-
     }
 
     @Override
@@ -56,7 +52,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         super.onStart();
 
         FirebaseUser mUser = mAuth.getCurrentUser();
-        if(mUser != null){
+        if (mUser != null) {
             startActivity(new Intent(Login.this, Menu.class));
         }
 
@@ -64,7 +60,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.registerText:
                 startActivity(new Intent(this, Register.class));
                 break;
@@ -72,48 +68,39 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 email = emailInput.getText().toString();
                 password = passwordInput.getText().toString();
 
-
-
-                if(email.isEmpty()){
+                if (email.isEmpty()) {
                     emailInput.setError("This field is required!");
                     emailInput.requestFocus();
                     return;
                 }
 
-                if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     emailInput.setError("Please provide valid email");
                     emailInput.requestFocus();
                     return;
                 }
 
-                if(password.isEmpty()){
+                if (password.isEmpty()) {
                     passwordInput.setError("This field is required!");
                     passwordInput.requestFocus();
                     return;
                 }
-
-
-
-
 
                 loginProgressBar.setVisibility(View.VISIBLE);
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                if(task.isSuccessful()){
+                                if (task.isSuccessful()) {
                                     loginProgressBar.setVisibility(View.GONE);
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     startActivity(new Intent(Login.this, Menu.class));
-                                }
-                                else{
+                                } else {
                                     loginProgressBar.setVisibility(View.GONE);
                                     Toast.makeText(Login.this, "Wrong email or password!", Toast.LENGTH_LONG).show();
                                 }
-
                             }
                         });
-
         }
     }
 }

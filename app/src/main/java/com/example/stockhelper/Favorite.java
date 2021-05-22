@@ -45,8 +45,7 @@ public class Favorite extends AppCompatActivity {
     ListView listView;
     ProgressBar searchProgressBar;
     Map stockSymbols = new HashMap();
-
-    String[] nameList={};
+    String[] nameList = {};
     ArrayAdapter<String> arrayAdapter;
 
     private FirebaseAuth mAuth;
@@ -74,18 +73,15 @@ public class Favorite extends AppCompatActivity {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.child("Users").child(mAuth.getCurrentUser().getUid()).hasChild("fav")){
+                if (snapshot.child("Users").child(mAuth.getCurrentUser().getUid()).hasChild("fav")) {
                     currentFav = snapshot.child("Users").child(mAuth.getCurrentUser().getUid()).child("fav").getValue().toString();
 
                     try {
                         JSONArray jsonArray = new JSONArray(loadJSONFromAsset("AllCompaniesWithSymbolsTrimmed.json"));
-                        List<String> temporaryList= new ArrayList<String>();
-                        for(int i = 0; i <jsonArray.length(); i++){
+                        List<String> temporaryList = new ArrayList<String>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject companyDetail = jsonArray.getJSONObject(i);
-                            if (currentFav.matches(".*\\b"+companyDetail.getString("Symbol")+"\\b.*")) {
-                                System.out.println(companyDetail.getString("Name"));
-                                System.out.println(companyDetail.getString("Symbol"));
-                                System.out.println(currentFav.matches(".*\\b"+companyDetail.getString("Symbol")+"\\b.*"));
+                            if (currentFav.matches(".*\\b" + companyDetail.getString("Symbol") + "\\b.*")) {
                                 temporaryList.add(companyDetail.getString("Name"));
                             }
                         }
@@ -94,9 +90,8 @@ public class Favorite extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    System.out.println(Arrays.toString(nameList));
 
-                    searchView =findViewById(R.id.searchBar);
+                    searchView = findViewById(R.id.searchBar);
                     listView = findViewById(R.id.listItem);
                     arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, android.R.id.text1, nameList);
                     listView.setAdapter(arrayAdapter);
@@ -111,29 +106,23 @@ public class Favorite extends AppCompatActivity {
                         @Override
                         public boolean onQueryTextSubmit(String query) {
                             Favorite.this.arrayAdapter.getFilter().filter(query);
-
                             return false;
                         }
+
                         @Override
                         public boolean onQueryTextChange(String newText) {
                             Favorite.this.arrayAdapter.getFilter().filter((newText));
-
                             return false;
                         }
                     });
-
-
-
-
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
-
 
 
     private String loadJSONFromAsset(String fileName) {
@@ -152,17 +141,14 @@ public class Favorite extends AppCompatActivity {
         return json;
     }
 
-    private void loadHashMapFromJson(){
+    private void loadHashMapFromJson() {
 
         try {
             JSONArray jsonArray = new JSONArray(loadJSONFromAsset("AllCompaniesWithSymbolsTrimmed.json"));
-
-            for(int i = 0; i <jsonArray.length(); i++){
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject companyDetail = jsonArray.getJSONObject(i);
                 stockSymbols.put(companyDetail.getString("Name"), companyDetail.getString("Symbol"));
-
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -171,7 +157,7 @@ public class Favorite extends AppCompatActivity {
 
     private void jsonParse(String stockName) {
         String stockSymbol = stockSymbols.get(stockName).toString();
-        String url = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +stockSymbol+ "&apikey=IBBOJPT8T6NZA44K";
+        String url = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" + stockSymbol + "&apikey=IBBOJPT8T6NZA44K";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -193,7 +179,6 @@ public class Favorite extends AppCompatActivity {
                             intent.putExtra("chosenStock", chosenStock);
                             searchProgressBar.setVisibility(View.GONE);
                             startActivity(intent);
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(Favorite.this, "Something gone wrong! Try again!", Toast.LENGTH_LONG).show();
