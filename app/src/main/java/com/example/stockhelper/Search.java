@@ -30,13 +30,12 @@ import java.util.Map;
 
 public class Search extends AppCompatActivity {
 
-    SearchView searchView;
-    ListView listView;
-    ProgressBar searchProgressBar;
-    Map stockSymbols = new HashMap();
-    String[] nameList = {};
-    ArrayAdapter<String> arrayAdapter;
-
+    private SearchView searchView;
+    private ListView listView;
+    private ProgressBar searchProgressBar;
+    private Map stockSymbols = new HashMap();
+    private String[] nameList = {};
+    private ArrayAdapter<String> arrayAdapter;
     private RequestQueue mQueue;
 
 
@@ -46,6 +45,8 @@ public class Search extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         searchProgressBar = findViewById(R.id.searchProgressBar);
+        searchView = findViewById(R.id.searchBarTest);
+        listView = findViewById(R.id.listItem);
 
         arrayToList();
         loadHashMapFromJson();
@@ -56,8 +57,6 @@ public class Search extends AppCompatActivity {
 
 
     public void searchingViewList() {
-        searchView = findViewById(R.id.searchBar);
-        listView = findViewById(R.id.listItem);
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, nameList);
         listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

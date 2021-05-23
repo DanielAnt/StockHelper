@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.android.volley:volley:1.1.0'
     implementation "org.mockito:mockito-core:3.+"
     implementation 'com.jjoe64:graphview:4.2.2'
+    implementation 'org.apache.commons:commons-text:1.6'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

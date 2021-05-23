@@ -34,7 +34,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +90,7 @@ public class Favorite extends AppCompatActivity {
                     }
 
 
-                    searchView = findViewById(R.id.searchBar);
+                    searchView = findViewById(R.id.searchBarTest);
                     listView = findViewById(R.id.listItem);
                     arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, android.R.id.text1, nameList);
                     listView.setAdapter(arrayAdapter);

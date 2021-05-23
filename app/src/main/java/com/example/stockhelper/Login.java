@@ -57,7 +57,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     @Override
     protected void onStart() {
         super.onStart();
-
         FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser != null) {
             loginProgressBar.setVisibility(View.VISIBLE);
@@ -95,7 +94,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private void ChangeActivity(String username){
         loginProgressBar.setVisibility(View.GONE);
-        System.out.println(username);
         Intent intent = new Intent(this, Menu.class);
         intent.putExtra("username", username);
         startActivity(intent);
@@ -129,7 +127,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
                             DataBaseRequest();
                         } else {
                             loginProgressBar.setVisibility(View.GONE);
