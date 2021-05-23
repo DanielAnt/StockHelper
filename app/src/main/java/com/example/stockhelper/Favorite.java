@@ -90,7 +90,7 @@ public class Favorite extends AppCompatActivity {
                     }
 
 
-                    searchView = findViewById(R.id.searchBarTest);
+                    searchView = findViewById(R.id.searchBar);
                     listView = findViewById(R.id.listItem);
                     arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, android.R.id.text1, nameList);
                     listView.setAdapter(arrayAdapter);

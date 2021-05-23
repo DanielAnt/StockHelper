@@ -45,7 +45,7 @@ public class Search extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         searchProgressBar = findViewById(R.id.searchProgressBar);
-        searchView = findViewById(R.id.searchBarTest);
+        searchView = findViewById(R.id.searchBar);
         listView = findViewById(R.id.listItem);
 
         arrayToList();
